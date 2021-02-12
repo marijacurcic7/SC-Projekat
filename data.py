@@ -55,8 +55,7 @@ def load_data():
         imggray = my_rgb2gray(list[1])
         features_gray.append([list[0], normalize_gray(imggray), list[2], list[3]])
 
-    features_df = pd.DataFrame(features_gray, columns=["file", "feature", "instrument", "pitch"])
-    return features_df
+    return features_gray
 
 
 def extract_spectrogram(file_name):

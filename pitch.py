@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
 
-def pitch_training(features_df):
+def pitch_training(features_df, features_gray):
 
     X = np.array(features_df.feature.tolist())
     yinst = np.array(features_df.pitch.tolist())
@@ -49,9 +49,20 @@ def pitch_training(features_df):
     test_score = model.evaluate(x_test, y_test, verbose=1)
     print("Pitch Test Accuracy: ", test_score[1])
 
-    # predictions = model.predict([x_test])
-    # n = random.randint(0, len(y_test))
-    # i = np.argmax(predictions[n])
-    # print(leinst.classes_[i])
-    # print(x_test[n])
+
+    #preditction
+    predictions = model.predict([x_test])
+    n = random.randint(0, len(y_test))
+    i = np.argmax(predictions[n])
+    print(x_test[n])
+    print("Prediction: ", leinst.classes_[i])
+
+    for f in features_gray:
+        X = np.array(f[1].tolist())
+        X = X.reshape(128, 44, 1)
+
+        comparison = X == x_test[n]
+        equal_arrays = comparison.all()
+        if (equal_arrays):
+            print("Class: ", f[3])
 
