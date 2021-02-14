@@ -4,6 +4,35 @@ import random
 from datetime import datetime
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import metrics
+
+
+def instrument_svm(features_df):
+
+    X = np.array(features_df.feature.tolist())
+    y = np.array(features_df.instrument.tolist())
+
+    le = LabelEncoder()
+    yyinst = le.fit_transform(y)
+
+    x_train, x_test, y_train, y_test = train_test_split(X, yyinst, test_size=0.2, shuffle=True, random_state=42)
+
+    model = SVC(kernel="linear")
+
+    #print(x_train.shape)
+
+    model.fit(x_train, y_train)
+
+    y_pred_train = model.predict(x_train)
+    print("Train Accuracy:", metrics.accuracy_score(y_train, y_pred_train))
+
+    y_pred_test = model.predict(x_test)
+    print("Test Accuracy:", metrics.accuracy_score(y_test, y_pred_test))
+
+    print(set(y_test) - set(y_pred_test))
+
+    print(metrics.classification_report(y_test, y_pred_test, target_names=le.classes_))
 
 
 def instrument_training(features_df, features_gray):
@@ -23,8 +52,8 @@ def instrument_training(features_df, features_gray):
 
     x_val, x_test, y_val, y_test = train_test_split(x_test, y_test, test_size=0.5, shuffle=True, random_state=42)
     x_val = x_val.reshape(len(x_val), 128, 44, 1)
-    print(x_val)
-    print(x_test)
+    # print(x_val)
+    # print(x_test)
 
     num_classes = len(leinst.classes_)
     y_train = to_categorical(y_train, num_classes=num_classes)

@@ -4,6 +4,35 @@ import random
 from datetime import datetime
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import metrics
+
+def pitch_svm(features_df):
+
+    X = np.array(features_df.feature.tolist())
+    y = np.array(features_df.pitch.tolist())
+
+    le = LabelEncoder()
+    yyinst = le.fit_transform(y)
+
+    x_train, x_test, y_train, y_test = train_test_split(X, yyinst, test_size=0.2, shuffle=True, random_state=42)
+
+    model = SVC(kernel="linear")
+
+    #print(x_train.shape)
+
+    model.fit(x_train, y_train)
+
+    y_pred_train = model.predict(x_train)
+    print("Train Accuracy:", metrics.accuracy_score(y_train, y_pred_train))
+
+    y_pred_test = model.predict(x_test)
+    print("Test Accuracy:", metrics.accuracy_score(y_test, y_pred_test))
+
+    print(set(y_test) - set(y_pred_test))
+
+    print(metrics.classification_report(y_test, y_pred_test, target_names=le.classes_))
+
 
 
 def pitch_training(features_df, features_gray):
@@ -30,7 +59,7 @@ def pitch_training(features_df, features_gray):
     y_validation = to_categorical(y_validation, num_classes=num_classes)
 
     # training
-    num_epochs = 100
+    num_epochs = 60
     batch_size = 32
     model = model1(num_classes)
 

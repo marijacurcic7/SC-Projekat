@@ -27,9 +27,28 @@ def model1(num_classes):
     model.add(Flatten())
     model.add(Dense(4096, activation='relu'))
     model.add(Dropout(0.5))
+    model.add(Dense(1024, activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
     # Compile
     model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
     print(model.summary())
 
     return model
+
+
+def model2(num_classes):
+    model2 = Sequential()
+    model2.add(Conv2D(16, kernel_size=(3, 3), activation='relu', input_shape=(128, 44, 1)))
+    model2.add(MaxPooling2D(pool_size=(2, 2)))
+    model2.add(Dropout(0.25))
+    model2.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(128, 44, 1)))
+    model2.add(MaxPooling2D(pool_size=(2, 2)))
+    model2.add(Dropout(0.25))
+    model2.add(Flatten())
+    model2.add(Dense(128, activation='relu'))
+    model2.add(Dropout(0.5))
+    model2.add(Dense(num_classes, activation='softmax'))
+    model2.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
+    print(model2.summary())
+    return model2

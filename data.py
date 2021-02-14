@@ -5,9 +5,52 @@ import librosa.display
 
 import numpy as np
 
-
-
 def load_data():
+    folder_path = "dataset/"
+    folder_list = ["Accordion", "Clarinet_Bb", "Contrabass", "Horn", "Viola", "Violin", "Violoncello"]
+    features = []
+    onlyfiles = []
+
+    from os import listdir
+    from os.path import isfile, join
+
+    for folder_inst in folder_list:
+        onlyfiles = onlyfiles + [f for f in listdir("dataset/" + folder_inst) if
+                                 isfile(join("dataset/" + folder_inst + "/", f))]
+
+    for file in onlyfiles:
+        dodatak = ''
+        if (file.split("-")[0] == "Acc"):
+            dodatak = "Accordion"
+        elif (file.split("-")[0] == "ClBb"):
+            dodatak = "Clarinet_Bb"
+        elif (file.split("-")[0] == "Cb"):
+            dodatak = "Contrabass"
+        elif (file.split("-")[0] == "Hn"):
+            dodatak = "Horn"
+        elif (file.split("-")[0] == "Va"):
+            dodatak = "Viola"
+        elif (file.split("-")[0] == "Vn"):
+            dodatak = "Violin"
+        elif (file.split("-")[0] == "Vc"):
+            dodatak = "Violoncello"
+
+        file_name = folder_path + dodatak + "/" + file
+        a = file.split("-")
+        instrument = a[0]
+        # print(file_name)
+        pitch = a[2]
+        if (len(pitch) == 3):
+            pitch = pitch[:2]
+        else:
+            pitch = pitch[:1]
+        data = extract_features(file_name)
+        features.append([file_name, data, instrument, pitch])
+
+    return features
+
+
+def load_data_spec():
     folder_path = "dataset/"
     folder_list = ["Accordion", "Clarinet_Bb", "Contrabass", "Horn", "Viola", "Violin", "Violoncello"]
     features = []
@@ -56,6 +99,19 @@ def load_data():
         features_gray.append([list[0], normalize_gray(imggray), list[2], list[3]])
 
     return features_gray
+
+
+def extract_features(file_name):
+    try:
+        audio, sample_rate = librosa.load(file_name, res_type="kaiser_fast")
+        mfccs = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=40)
+        mfccscaled = np.mean(mfccs.T, axis=0)
+
+    except Exception as e:
+        print("Error encountered while parsing file: ", file_name)
+        return None
+
+    return mfccscaled
 
 
 def extract_spectrogram(file_name):

@@ -5,14 +5,16 @@ from instrument import *
 
 if __name__ == '__main__':
 
-    features_gray = load_data()
-    features_df = pd.DataFrame(features_gray, columns=["file", "feature", "instrument", "pitch"])
-    print(features_df.head())
+    features_gray = load_data_spec()
+    features_cnn = pd.DataFrame(features_gray, columns=["file", "feature", "instrument", "pitch"])
+    print(features_cnn.head())
 
     print("===================================================================")
-    print("\n[INSTRUMENT TRAINING]")
-    #instrument_training(features_df, features_gray)
+    print("\n[INSTRUMENT CNN]")
+    instrument_training(features_cnn, features_gray)
 
     print("===================================================================")
-    print("\n[PITCH TRAINING]")
-    pitch_training(features_df, features_gray)
+    print("\n[PITCH CNN]")
+    pitch_training(features_cnn, features_gray)
+
+
